@@ -1,36 +1,58 @@
-name: Issue → Discord
+name: "Issue → Discord"
+
 on:
   issues:
     types: [opened, edited, closed, reopened, labeled, unlabeled]
+  issue_comment:
+    types: [created, edited, deleted]
+  workflow_dispatch: {}
 
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Notify Discord
-        uses: Ilshidur/action-discord@0.3.2
+      - name: Send to Discord
+        uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_USERNAME: "GitHub Bot"
+          DISCORD_AVATAR: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
           DISCORD_EMBEDS: |
-           [{
-            "title": "${{ github.event.issue.title }}",
-            "url":   "${{ github.event.issue.html_url }}",
-            "description": "${{ github.event.action }} by @${{ github.actor }}",
-            "fields": [
-            {
-            "name":  "State",
-            "value": "${{ github.event.issue.state }}",
-            "inline": true
-            },
-            {
-            "name":  "Labels",
-            "value": "${{ join(github.event.issue.labels.*.name, ', ') }}",
-            "inline": true
-            },
-            {
-            "name":  "Assignees",
-            "value": "${{ join(github.event.issue.assignees.*.login, ', ') }}",
-            "inline": true
-            }
-            ]
+            [{
+              "title": ${{ 
+                github.event_name == 'issue_comment' 
+                  && '"Comment on: ' + github.event.issue.title + '"' 
+                  || '"Issue: ' + github.event.issue.title + '"' 
+              }},
+              "url": ${{ 
+                github.event_name == 'issue_comment' 
+                  && github.event.comment.html_url 
+                  || github.event.issue.html_url 
+              }},
+              "description": ${{ 
+                github.event_name == 'issue_comment' 
+                  && github.event.comment.body 
+                  || (github.event.action + " by @" + github.actor) 
+              }},
+              "fields": [
+                {
+                  "name": "By",
+                  "value": "${{ 
+                    github.event_name == 'issue_comment' 
+                      && github.event.comment.user.login 
+                      || github.event.actor 
+                  }}", 
+                  "inline": true
+                },
+                {
+                  "name": "State",
+                  "value": "${{ github.event.issue.state }}",
+                  "inline": true
+                },
+                {
+                  "name": "Status Labels",
+                  "value": "${{ join(github.event.issue.labels.*.name, ', ') }}",
+                  "inline": true
+                }
+              ]
             }]
