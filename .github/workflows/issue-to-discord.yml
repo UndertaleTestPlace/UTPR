@@ -1,0 +1,32 @@
+name: "🔔 Project Issue → Discord"
+on:
+  issues:
+    types: [opened, edited, closed, reopened]
+jobs:
+  discord_notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Discord of Issue Change
+        uses: ilshidur/action-discord@v2
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          username: GitHub-Projects
+          avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          embed: |
+            {
+              "title": "${{ github.event.issue.title }}",
+              "url": "${{ github.event.issue.html_url }}",
+              "description": "**${{ github.event.action | capitalize }}** by @${{ github.actor }}",
+              "fields": [
+                {
+                  "name": "State",
+                  "value": "${{ github.event.issue.state }}",
+                  "inline": true
+                },
+                {
+                  "name": "Assignees",
+                  "value": "${{ github.event.issue.assignees.*.login | join(', ') || 'None' }}",
+                  "inline": true
+                }
+              ]
+            }
