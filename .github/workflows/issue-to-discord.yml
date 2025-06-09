@@ -13,12 +13,24 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
           DISCORD_EMBEDS: |
            [{
-              "title": "${{ github.event.issue.title }}",
-              "url": "${{ github.event.issue.html_url }}",
-              "description": "${{ github.event.action }} by @${{ github.actor }}",
-              "fields": [
-                { "name": "State",     "value": "${{ github.event.issue.state }}", "inline": true },
-                { "name": "Labels",    "value": "${{ github.event.issue.labels.*.name }}", "inline": true },
-                { "name": "Assignees", "value": "${{ github.event.issue.assignees.*.login }}", "inline": true }
-              ]
+            "title": "${{ github.event.issue.title }}",
+            "url":   "${{ github.event.issue.html_url }}",
+            "description": "${{ github.event.action }} by @${{ github.actor }}",
+            "fields": [
+            {
+            "name":  "State",
+            "value": "${{ github.event.issue.state }}",
+            "inline": true
+            },
+            {
+            "name":  "Labels",
+            "value": "${{ join(github.event.issue.labels.*.name, ', ') }}",
+            "inline": true
+            },
+            {
+            "name":  "Assignees",
+            "value": "${{ join(github.event.issue.assignees.*.login, ', ') }}",
+            "inline": true
+            }
+            ]
             }]
