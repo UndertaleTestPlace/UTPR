@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notify Discord of Issue Change
-        uses: ilshidur/action-discord@v2
+        uses: Ilshidur/action-discord@0.3.2
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           username: GitHub-Projects
@@ -25,20 +25,8 @@ jobs:
               "url": "${{ github.event.issue.html_url }}",
               "description": "**${{ github.event.action }}** by @${{ github.actor }}",
               "fields": [
-                {
-                  "name": "State",
-                  "value": "${{ github.event.issue.state }}",
-                  "inline": true
-                },
-                {
-                  "name": "Assignees",
-                  "value": "${{ github.event.issue.assignees.*.login }}",
-                  "inline": true
-                },
-                {
-                  "name": "Labels",
-                  "value": "${{ github.event.issue.labels.*.name }}",
-                  "inline": true
-                }
+                { "name": "State",     "value": "${{ github.event.issue.state }}",      "inline": true },
+                { "name": "Assignees", "value": "${{ github.event.issue.assignees.*.login }}", "inline": true },
+                { "name": "Labels",    "value": "${{ github.event.issue.labels.*.name }}",    "inline": true }
               ]
             }
