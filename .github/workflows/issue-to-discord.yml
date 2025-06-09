@@ -1,7 +1,14 @@
 name: "🔔 Project Issue → Discord"
+
 on:
   issues:
-    types: [opened, edited, closed, reopened]
+    types:
+      - opened
+      - edited
+      - closed
+      - reopened
+  workflow_dispatch: {}
+
 jobs:
   discord_notify:
     runs-on: ubuntu-latest
@@ -16,7 +23,7 @@ jobs:
             {
               "title": "${{ github.event.issue.title }}",
               "url": "${{ github.event.issue.html_url }}",
-              "description": "**${{ github.event.action | capitalize }}** by @${{ github.actor }}",
+              "description": "**${{ github.event.action }}** by @${{ github.actor }}",
               "fields": [
                 {
                   "name": "State",
