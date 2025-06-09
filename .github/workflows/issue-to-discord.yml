@@ -1,32 +1,24 @@
-name: "🔔 Project Issue → Discord"
-
+name: Issue → Discord
 on:
   issues:
-    types:
-      - opened
-      - edited
-      - closed
-      - reopened
-  workflow_dispatch: {}
+    types: [opened, edited, closed, reopened]
 
 jobs:
-  discord_notify:
+  notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Notify Discord of Issue Change
+      - name: Notify Discord
         uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          DISCORD_USERNAME: "My Bot Name"            # optional
+          DISCORD_AVATAR: "https://my.cdn/avatar.png" # optional
+          DISCORD_EMBEDS: |
+            ${{ toJson([{
+              title: github.event.issue.title,
+              url: github.event.issue.html_url,
+              description: github.event.action + " by @" + github.actor
+            }]) }}
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          username: GitHub-Projects
-          avatar_url: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
-          embed: |
-            {
-              "title": "${{ github.event.issue.title }}",
-              "url": "${{ github.event.issue.html_url }}",
-              "description": "**${{ github.event.action }}** by @${{ github.actor }}",
-              "fields": [
-                { "name": "State",     "value": "${{ github.event.issue.state }}",      "inline": true },
-                { "name": "Assignees", "value": "${{ github.event.issue.assignees.*.login }}", "inline": true },
-                { "name": "Labels",    "value": "${{ github.event.issue.labels.*.name }}",    "inline": true }
-              ]
-            }
+          # If you omit `args`, the action will post a default summary
+          args: "" 
