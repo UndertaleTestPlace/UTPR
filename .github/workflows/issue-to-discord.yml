@@ -7,7 +7,7 @@ on:
       - edited
       - closed
       - reopened
-  workflow_dispatch: {}   # optional manual trigger for testing
+  workflow_dispatch: {}
 
 jobs:
   discord_notify:
@@ -32,20 +32,12 @@ jobs:
                 },
                 {
                   "name": "Assignees",
-                  "value": "${{ 
-                    (github.event.issue.assignees && length(github.event.issue.assignees) > 0) 
-                      && join(github.event.issue.assignees.*.login, ', ') 
-                      || 'None' 
-                  }}",
+                  "value": "${{ github.event.issue.assignees.*.login }}",
                   "inline": true
                 },
                 {
                   "name": "Labels",
-                  "value": "${{ 
-                    (github.event.issue.labels && length(github.event.issue.labels) > 0) 
-                      && join(github.event.issue.labels.*.name, ', ') 
-                      || 'None' 
-                  }}",
+                  "value": "${{ github.event.issue.labels.*.name }}",
                   "inline": true
                 }
               ]
