@@ -11,8 +11,6 @@ jobs:
         uses: Ilshidur/action-discord@0.3.2
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          DISCORD_USERNAME: "My Bot Name"            # optional
-          DISCORD_AVATAR: "https://my.cdn/avatar.png" # optional
           DISCORD_EMBEDS: |
             ${{ toJson([{
               title: github.event.issue.title,
